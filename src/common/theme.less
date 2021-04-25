@@ -1,0 +1,21 @@
+@main:#f69c44;
+@nav: #22334a ;
+@nav-active: #f69c4;
+@bg-body: #f5f7fa;
+@bg-nav: #1a2334;
+@formline: #c8d2e2;
+
+/*单行文本省略*/
+.ellipse(@width:100%){
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+  width:@width;
+}
+/*多行文本省略*/
+.mul_ellipse(@line: 3){
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: @line;
+  overflow: hidden;
+}
