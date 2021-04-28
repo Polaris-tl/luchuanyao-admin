@@ -3,6 +3,7 @@ import NavBar from '@/components/navBar/navBar'
 import Footer from '@/components/footer/footer'
 import {Switch, Route ,Link} from 'umi'
 import Home from './home/home'
+import Products from './products/products'
 
 export default function IndexPage() {
   return (
@@ -11,6 +12,15 @@ export default function IndexPage() {
       <NavBar />
       <Switch>
         <Route path='/' exact component={Home} />
+        <Route path='/main/products' component={Products} />
+        <Route path='/main/resolutions' component={Products} />
+        <Route path='/main/cases' component={Products} />
+        <Route path='/main/news' component={Products} />
+        <Route path='/main/strategy' component={Products} />
+        <Route path='/main/joinus' component={Products} />
+        <Route path='/main/help' component={Products} />
+        <Route path='/main/dataManagement' component={Products} />
+        <Route path='/main/authManagement' component={Products} />
       </Switch>
       <Footer />
     </div>
