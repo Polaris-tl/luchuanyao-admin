@@ -22,6 +22,7 @@
   "dependencies": {
     "@ant-design/pro-layout": "^6.5.0",
     "@umijs/preset-react": "1.x",
+    "axios": "^0.21.1",
     "draft-js": "^0.11.7",
     "draftjs-to-html": "^0.9.1",
     "react-draft-wysiwyg": "^1.14.6",
