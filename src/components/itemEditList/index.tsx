@@ -13,14 +13,15 @@ interface IProduct {
 }
 interface IProps {
   listUrl: string,
-  updateUrl: string
+  updateUrl: string,
+  deleteUrl: string
 }
 
  export interface IExpose {
   refreshList: () => void
 }
 const ItemEditList = forwardRef<IExpose, IProps>((props:IProps, ref) => {
-  const { listUrl, updateUrl } = props
+  const { listUrl, updateUrl, deleteUrl } = props
   const [products, setProducts] = useState<IProduct[]>([]);
   useEffect(() => {
     (async () => {
@@ -100,7 +101,7 @@ const ItemEditList = forwardRef<IExpose, IProps>((props:IProps, ref) => {
   };
   // 删除
   const deleteItem = async (id: string) => {
-    const res = await myGet('ProductTech/deleteById', { id });
+    const res = await myGet(deleteUrl, { id });
     if (res) {
       message.success('删除成功');
       refreshList()

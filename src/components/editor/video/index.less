@@ -1,0 +1,45 @@
+.box{
+  position: relative;
+  .icon{
+    width: 46px;
+    height: 26px;
+    text-align: center;
+    img{
+      object-fit: cover;
+      width: 100%;
+    }
+  }
+  .popup{
+    position: absolute;
+    width: 245px;
+    top: 36px;
+    background: #fff;
+    padding: 11px 10px 10px 10px;
+    box-shadow: 0 0 9px 0px #adadad;
+    z-index: 10;
+    :global(.ant-tabs){
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 14px;
+      font-variant: tabular-nums;
+      line-height: 1.5715;
+      list-style: none;
+      font-feature-settings: 'tnum', "tnum";
+      display: flex;
+      overflow: hidden;
+      margin: 10px;
+      min-height: calc(100% - 46px);
+      border-bottom: 1px solid #f0f0f0;
+    }
+    .tab{
+      span{
+        border-bottom: 1px solid black;
+      }
+      .avtive{
+        border-bottom: 1px solid red;
+      }
+    }
+  }
+}

@@ -1,8 +1,9 @@
+import Editor from '@/components/editor'
 import st from './news.less'
 const Products = () => {
   return <div>
     <div className={st.main}>
-      产品
+      <Editor />
     </div>
   </div>
 }

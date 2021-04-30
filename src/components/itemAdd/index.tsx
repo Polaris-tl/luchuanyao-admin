@@ -180,7 +180,6 @@ const ItemAdd: React.FC<IProps> = (props) => {
           <p>{toAddedItem.title || '标题预览'}</p>
           <div>
             <img
-              hidden={!Boolean(toAddedItem.img)}
               src={toAddedItem.img || defaultImage}
               alt=""
             />

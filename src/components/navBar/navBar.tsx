@@ -1,9 +1,9 @@
 import { Menu } from 'antd';
-import { Link } from 'umi';
+import { Link, useLocation } from 'umi';
 
 const mockData = [
   { name: '产品技术', url: '/main/products' },
-  { name: '解决方案', url: '/main/resolutions' },
+  { name: '解决方案', url: '/main/solutions' },
   { name: '服务案例', url: '/main/cases' },
   { name: '新闻中心', url: '/main/news' },
   { name: '品牌战略', url: '/main/strategy' },
@@ -16,13 +16,15 @@ const mockData = [
 
 import st from './navBar.less';
 const Header = () => {
+  const params = useLocation()
+  const defaulActiveKey = mockData.findIndex(item => item.url == params.pathname) + ''
   return (
     <div className={st.navBar}>
       <div className={st.box}>
-        <Menu defaultSelectedKeys={['0']} mode="horizontal" theme="dark">
+        <Menu defaultSelectedKeys={[defaulActiveKey]} mode="horizontal" theme="dark">
           {mockData.map((item, idx) => {
             return (
-              <Menu.Item key={idx}>
+              <Menu.Item key={idx} active={params.pathname == item.url}>
                 <Link to={item.url}>{item.name}</Link>
               </Menu.Item>
             );

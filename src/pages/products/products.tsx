@@ -8,7 +8,6 @@ import st from './products.less';
 const Products = () => {
   const itemListRef = useRef<any>()
   const refreshList = async() => {
-    console.log(refreshList)
     itemListRef?.current.refreshList()
   }
  
@@ -18,7 +17,7 @@ const Products = () => {
         {/*banner 图片、视频上传 */}
         <BannerUploader resourceId='1'/>
         {/*修改 */}
-        <ItemEditList ref={itemListRef} listUrl='ProductTech/selectAll' updateUrl='ProductTech/update'/>
+        <ItemEditList ref={itemListRef} listUrl='ProductTech/selectAll' updateUrl='ProductTech/update' deleteUrl='ProductTech/deleteById'/>
         {/*新增 */}
         <ItemAdd uploadUrl='ProductTech/add' refreshList={refreshList}/>
       </div>
