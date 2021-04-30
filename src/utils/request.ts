@@ -42,10 +42,18 @@ export const myPost: <T = any>(url: string, parameter: any) => Promise<T> = (
   return axios.post(url, parameter);
 };
 
-export const uploadFile: (file: File) => Promise<{ url: string }> = (
-  file: File,
-) => {
+export const uploadFile: (file: File) => Promise<{ url: string }> = file => {
   const param = new FormData();
   param.append('file', file);
   return axios.post('Upload/fileUpload', param);
+};
+
+// resourceId 1产品技术 2服务案例 3新闻中心 4加入我们 5解决方案 6品牌战略
+export const uploadFiles: (file: File[], resourceId: string) => Promise<{ data: Record<any, string>, url: string, msg: string }> = (
+  file, resourceId
+) => {
+  const param = new FormData();
+  param.append('resourceId', resourceId)
+  file.forEach(item => param.append('files', item))
+  return axios.post('Upload/imgUpload4Banner', param);
 };

@@ -1,0 +1,87 @@
+.articleBox{
+  padding: 20px 15px;
+  margin-top: 30px;
+  background: #fff;
+  .top{
+    display: flex;
+    .left{
+      width: 55%;
+      margin-right: 5%;
+      .title{
+        margin-bottom: 20px;
+      }
+      .subTitleBox{
+        display: flex;
+        justify-content: space-between;
+        .subTitle{
+          width: 100%;
+          textarea{
+            height: 100px;
+          }
+        }
+        .upload{
+          width: 150px;
+          height: 100px;
+          margin-left: 23px;
+          border: 1px dashed #d6d6d6;
+          background-image: url('../../static/imgs/upload_grey.png');
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: 20px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
+          img{
+            width: 100%;
+            object-fit: cover;
+          }
+          p{
+            position: relative;
+            top: 30px;
+            color: #999;
+            margin: 0;
+          }
+          &:hover{
+            background-image: url('../../static/imgs/upload_blue.png');
+            border: 1px dashed #40a9ff;
+          }
+        }
+      }
+    }
+    .right{
+      width: 45%;
+      textarea{
+        height: 150px;
+      }
+    }
+  }
+  .bottom{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 0;
+    border-top: 1px solid #565656;
+    margin-top: 20px;
+    .tip{
+      color: #616161;
+      margin: 0;
+    }
+    .btnGroup{
+      button{
+        padding: 5px 16px;
+        margin: 0 10px;
+      }
+    }
+  }
+}
+:global(.ant-input-textarea-show-count::after){
+  float: right;
+  color: rgba(0, 0, 0, 0.45);
+  white-space: nowrap;
+  content: attr(data-count);
+  pointer-events: none;
+  position: relative;
+  bottom: 29px;
+  right: 14px;
+}
