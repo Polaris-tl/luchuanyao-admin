@@ -7,6 +7,7 @@ import Products from './products/products';
 import Solutions from './solutions/solutions';
 import Cases from './cases/cases';
 import News from './news/news';
+import './index.less';
 
 export default function IndexPage() {
   return (
