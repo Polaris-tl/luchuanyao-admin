@@ -4,7 +4,7 @@ import img1 from '@/static/imgs/banner_product.jpg';
 const date = new Date();
 const weekMaps = ['日', '一', '二', '三', '四', '五', '六'];
 const year = date.getFullYear();
-const month = date.getMonth() + '';
+const month = (date.getMonth() + 1) + '';
 const day = date.getDate() + '';
 
 import st from './header.less';
@@ -13,7 +13,7 @@ const Header = () => {
     <div className={st.header}>
       <div className={st.box}>
         <div className={st.logo}></div>
-        <div className={st.left}>橹船摇后台管理系统</div>
+        <div className={st.left}>摇橹船科技网站平台信息管理系统</div>
         <div className={st.right}>
           <span className={st.time}>
             {year + '-' + month.padStart(2, '0') + '-' + day.padStart(2, '0')}{' '}
