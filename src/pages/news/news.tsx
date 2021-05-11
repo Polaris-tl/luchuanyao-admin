@@ -1,28 +1,31 @@
 import { useState, useRef, useEffect } from 'react';
-import { Input, Button, message } from 'antd';
+import { Input, Button, message, DatePicker } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { myPost, uploadFile } from '@/utils/request';
 import Editor from '@/components/editor';
 import defaultImage from '@/static/imgs/default_image.png';
 import st from './news.less';
-
+import moment from 'moment'
 interface IProduct {
   id: string;
   title: string;
   subtitle: string;
   content: string;
+  publishDate: string;
+  publishPerson: string;
   img: string;
   file?: File;
 }
 const Products = () => {
   const [activeTabOne, setActiveTabOne] = useState(false); // 切换
-  const [htmlString, setHtmlString] = useState<string>(''); // 编辑器内容
   const [initValue, setInitValue] = useState<string>(''); // 编辑器初始值
   const [toAddedItem, setToAddedItem] = useState<IProduct>({
     title: '',
     subtitle: '',
     content: '',
     img: '',
+    publishDate: '',
+    publishPerson: '',
     id: '',
   });
   const inputRef = useRef<HTMLInputElement>(null);
@@ -53,6 +56,8 @@ const Products = () => {
       img: url,
       subtitle: toAddedItem.subtitle,
       title: toAddedItem.title,
+      publishPerson: '1',
+      publishDate: toAddedItem.publishDate ?? moment().format('yyyy-mm-dd hh:mm:ss')
     });
     if (res) {
       message.success('发布成功');
@@ -62,6 +67,8 @@ const Products = () => {
         content: '',
         img: '',
         id: '',
+        publishDate: '',
+        publishPerson: '',
       });
     } else {
       message.success('发布失败');
@@ -100,7 +107,14 @@ const Products = () => {
           </div>
         </div>
         <div className={st.right}>
-          <Editor initValue={initValue} setHtmlString={setHtmlString} />
+          <Editor initValue={initValue} setHtmlString={
+            (html) => {
+              setToAddedItem({
+                ...toAddedItem,
+                content: html
+              });
+            }
+          } />
           <div className={st.addBox}>
             <p className={st.top}>封面和摘要</p>
             <div className={st.bottom}>
@@ -129,6 +143,14 @@ const Products = () => {
                   }}
                   placeholder="请输入标题内容"
                 />
+                <DatePicker
+                  style={{ marginBottom: '10px' }}
+                  placeholder="发布日期"
+                  onChange={(date) => {
+                    if(date){
+                      setToAddedItem({ ...toAddedItem, publishDate: date.format('yyyy-mm-dd hh:mm:ss') });
+                    }
+                  }} />
                 <div>
                   <Input.TextArea
                     value={toAddedItem.subtitle}

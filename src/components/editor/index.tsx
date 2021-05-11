@@ -121,6 +121,15 @@ const toobarOptions = {
     previewImage: true,
     inputAccept: 'image/gif,image/jpeg,image/jpg,image/png,image/svg',
   },
+  colorPicker: {
+    // icon: color,
+    className: undefined,
+    component: undefined,
+    popupClassName: undefined,
+    colors: [
+      '#22334a', '#c8d2e2', '#f69c44',
+    ],
+  },
 };
 
 export default class ArticleEditor extends React.Component<IProps, IState> {
