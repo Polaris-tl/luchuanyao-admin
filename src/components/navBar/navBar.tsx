@@ -16,12 +16,18 @@ const mockData = [
 
 import st from './navBar.less';
 const Header = () => {
-  const params = useLocation()
-  const defaulActiveKey = mockData.findIndex(item => item.url == params.pathname) + ''
+  const params = useLocation();
+  const defaulActiveKey =
+    mockData.findIndex((item) => item.url == params.pathname) + '';
   return (
     <div className={st.navBar}>
       <div className={st.box}>
-        <Menu defaultSelectedKeys={[defaulActiveKey]} mode="horizontal" theme="dark">
+        <Menu
+          defaultSelectedKeys={[defaulActiveKey]}
+          mode="horizontal"
+          theme="dark"
+          inlineIndent={12}
+        >
           {mockData.map((item, idx) => {
             return (
               <Menu.Item key={idx} active={params.pathname == item.url}>

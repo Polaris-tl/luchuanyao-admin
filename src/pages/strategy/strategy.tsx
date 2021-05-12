@@ -1,19 +1,37 @@
-import { Upload, Button } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import st from './strategy.less'
+import { useRef, useState } from 'react';
+import BannerUploader from '@/components/bannerUploader';
+import ItemAdd from '@/components/itemAdd';
+import ItemEditList, { IProduct } from '@/components/itemEditList';
+
 const Products = () => {
-  return <div>
-    <div className={st.main}>
-      <div>
-        <Upload
-          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-          listType="picture"
-          className="upload-list-inline"
-        >
-          <Button icon={<UploadOutlined />}>Upload</Button>
-        </Upload>
+  const itemListRef = useRef<any>();
+  const [currentItem, setCurrentItem] = useState<IProduct>();
+  const refreshList = async () => {
+    itemListRef?.current.refreshList();
+  };
+
+  return (
+    <div>
+      <div style={{ width: '1200px', margin: 'auto' }}>
+        {/*banner 图片、视频上传 */}
+        {/* 1产品技术 2服务案例 3新闻中心 4加入我们 5解决方案 6品牌战略 */}
+        <BannerUploader resourceId="2" />
+        {/*新增 */}
+        <ItemAdd
+          item={currentItem}
+          addUrl="BrandStrategy/add"
+          updateUrl="BrandStrategy/update"
+          deleteUrl="BrandStrategy/deleteById"
+          refreshList={refreshList}
+        />
+        {/*修改 */}
+        <ItemEditList
+          ref={itemListRef}
+          listUrl="BrandStrategy/selectAll"
+          onClick={(item) => setCurrentItem(item)}
+        />
       </div>
     </div>
-  </div>
-}
-export default Products
+  );
+};
+export default Products;

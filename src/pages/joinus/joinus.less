@@ -1,6 +1,102 @@
-.main{
+.main {
   width: 1200px;
   margin: auto;
-  background: #fff;
   padding: 10px;
+  display: flex;
+  .left {
+    width: 360px;
+    margin-right: 20px;
+    .tab {
+      background: #fff;
+      display: flex;
+      height: 60px;
+      justify-content: center;
+      align-items: center;
+      padding: 5px;
+      font-size: 14px;
+      span {
+        padding: 0 20px;
+        display: block;
+        line-height: 40px;
+        height: 40px;
+        cursor: pointer;
+      }
+      .active {
+        font-weight: bold;
+        color: #ff9900;
+      }
+    }
+  }
+  .right {
+    width: 100%;
+    background: #fff;
+    padding: 10px;
+    min-height: 500px;
+    .addBox {
+      border-top: 2px solid #dde3ed;
+      padding-top: 10px;
+      .top {
+        font-size: 16px;
+      }
+      .bottom {
+        display: flex;
+        .left {
+          width: 210px;
+          height: 110px;
+          display: flex;
+          color: #bdbdbd;
+          font-size: 30px;
+          justify-content: center;
+          border: 1px dashed #bdbdbd;
+          align-items: center;
+          overflow: hidden;
+          &:hover {
+            color: #40a9ff;
+          }
+          img {
+            width: 100%;
+            object-fit: cover;
+          }
+        }
+        .right22 {
+          width: 100%;
+          .btnGroup {
+            display: flex;
+            margin-top: 14px;
+            justify-content: flex-end;
+            width: 100%;
+            button {
+              margin-left: 20px;
+              padding: 0 30px;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+.previewBox {
+  display: flex;
+  margin: 35px 0;
+  flex-wrap: wrap;
+  .preview {
+    background: #fff;
+    padding: 10px;
+    height: 200px;
+    overflow: hidden;
+    p {
+      margin: 0;
+      line-height: 42px;
+    }
+    > div {
+      display: flex;
+      width: 100%;
+      height: calc(100% - 42px);
+      img {
+        width: 100%;
+        object-fit: cover;
+      }
+    }
+  }
 }
