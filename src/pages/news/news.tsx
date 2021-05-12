@@ -146,9 +146,10 @@ const Products = () => {
                 <DatePicker
                   style={{ marginBottom: '10px' }}
                   placeholder="发布日期"
+                  showTime
                   onChange={(date) => {
                     if(date){
-                      setToAddedItem({ ...toAddedItem, publishDate: date.format('yyyy-mm-dd hh:mm:ss') });
+                      setToAddedItem({ ...toAddedItem, publishDate: date.format('YYYY-MM-DD HH:mm:ss') });
                     }
                   }} />
                 <div>

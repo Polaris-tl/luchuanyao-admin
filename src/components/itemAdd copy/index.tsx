@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef } from 'react';
 import { Input, Button, message } from 'antd';
-import { myPost,myGet, uploadFile } from '@/utils/request';
+import { myPost, uploadFile } from '@/utils/request';
 import { PlusOutlined } from '@ant-design/icons';
 import defaultImage from '@/static/imgs/default_image.png';
 import st from './index.less';
@@ -15,14 +15,11 @@ interface IProduct {
 }
 
 interface IProps {
-  addUrl: string,
-  updateUrl: string,
-  deleteUrl: string
-  item: IProduct | undefined,
+  uploadUrl: string,
   refreshList: () => void,
 }
 const ItemAdd: React.FC<IProps> = (props) => {
-  const { addUrl, updateUrl, deleteUrl, refreshList, item } = props
+  const { uploadUrl, refreshList } = props
   const [addVisible, setAddVisible] = useState(true); //新增盒子显示
   const [toAddedItem, setToAddedItem] = useState<IProduct>({
     title: '',
@@ -31,12 +28,12 @@ const ItemAdd: React.FC<IProps> = (props) => {
     img: '',
     id: '',
   }); //新增时的产品信息
-  useEffect(() => {
-    item && setToAddedItem(item)
-  }, [item])
   const inputRef = useRef<HTMLInputElement>(null);
   // 文件改变事件
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    id?: string,
+  ) => {
     if (!e.target.files || !e.target.files[0]) return;
     const file = e.target.files[0];
     // if(file.size > 12 * 1024 * 1024){
@@ -64,21 +61,13 @@ const ItemAdd: React.FC<IProps> = (props) => {
       reader.readAsDataURL(file);
     }
   };
-  // 发布
-  const onPublish = () => {
-    if(toAddedItem.id){
-      updateItem()
-    }else{
-      addItem()
-    }
-  }
   // 添加item
   const addItem = async () => {
     if (!toAddedItem.file) {
-        return message.warning('请上传图片');
+      return message.warning('请上传图片');
     }
     const { url } = await uploadFile(toAddedItem.file);
-    const res = await myPost(addUrl, {
+    const res = await myPost(uploadUrl, {
       content: toAddedItem.content,
       img: url,
       subtitle: toAddedItem.subtitle,
@@ -98,52 +87,7 @@ const ItemAdd: React.FC<IProps> = (props) => {
       message.success('发布失败');
     }
   };
-  // 修改item
-  const updateItem = async () => {
-    const {id, file, content, img, subtitle, title} = toAddedItem
-    let newImg = img
-    if (file) {
-        const { url } = await uploadFile(file);
-        newImg = url
-    }
-    const res = await myPost(updateUrl, {
-      id,
-      content,
-      img: newImg,
-      subtitle,
-      title,
-    });
-    if (res) {
-      message.success('发布成功');
-      setToAddedItem({
-        title: '',
-        subtitle: '',
-        content: '',
-        img: '',
-        id: '',
-      }); 
-      refreshList()
-    } else {
-      message.warning('发布失败');
-    }
-  };
-  // 删除
-  const deleteItem = async () => {
-    setToAddedItem({
-      title: '',
-      subtitle: '',
-      content: '',
-      img: '',
-      id: '',
-    });
-    if(toAddedItem.id){
-      const res = await myGet(deleteUrl, { id: toAddedItem.id });
-      if (res) {
-        message.success('删除成功');
-        refreshList()
-      }
-    }
-  }
+
   return(
     <>
       <div className={st.articleBox} hidden={!addVisible}>
@@ -210,9 +154,22 @@ const ItemAdd: React.FC<IProps> = (props) => {
             注：图片制式为1200px*600px的jpg、png格式文件
           </p>
           <div className={st.btnGroup}>
-            <Button onClick={() => deleteItem()}>删除此项</Button>
+            <Button
+              onClick={() => {
+                setToAddedItem({
+                  title: '',
+                  subtitle: '',
+                  content: '',
+                  img: '',
+                  id: '',
+                });
+                setAddVisible(false);
+              }}
+            >
+              删除此项
+            </Button>
             <Button>保存预览</Button>
-            <Button onClick={onPublish}>发布网站</Button>
+            <Button onClick={addItem}>发布网站</Button>
           </div>
         </div>
       </div>
@@ -228,13 +185,7 @@ const ItemAdd: React.FC<IProps> = (props) => {
             />
           </div>
         </div>
-        <div className={st.add} onClick={() => setToAddedItem({
-          title: '',
-          subtitle: '',
-          content: '',
-          img: '',
-          id: '',
-        })}>
+        <div className={st.add} onClick={() => setAddVisible(true)}>
           <PlusOutlined />
         </div>
       </div>
