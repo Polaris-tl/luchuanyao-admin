@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Input, Button, message, DatePicker } from 'antd';
+import { Input, Button, message, DatePicker, Checkbox } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { myPost, uploadFile } from '@/utils/request';
 import Editor from '@/components/editor';
 import defaultImage from '@/static/imgs/default_image.png';
+import NewsList from './list'
 import st from './news.less';
 import moment from 'moment'
 interface IProduct {
@@ -14,6 +15,8 @@ interface IProduct {
   publishDate: string;
   publishPerson: string;
   img: string;
+  displayType: 1 | 2; // 1块元素  2 行
+  isTop: boolean; // 置顶
   file?: File;
 }
 const Products = () => {
@@ -27,6 +30,8 @@ const Products = () => {
     publishDate: '',
     publishPerson: '',
     id: '',
+    displayType: 1,
+    isTop: false
   });
   const inputRef = useRef<HTMLInputElement>(null);
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,14 +56,22 @@ const Products = () => {
       return message.warning('请上传图片');
     }
     const { url } = await uploadFile(toAddedItem.file);
-    const res = await myPost('/News/add', {
-      content: toAddedItem.content,
+    const {content, displayType, isTop, subtitle, title, publishDate} = toAddedItem
+    const data = {
+      content,
       img: url,
-      subtitle: toAddedItem.subtitle,
-      title: toAddedItem.title,
-      publishPerson: '1',
-      publishDate: toAddedItem.publishDate ?? moment().format('yyyy-mm-dd hh:mm:ss')
-    });
+      subtitle,
+      title,
+      displayType,
+      isTop,
+      publishPerson: 1,
+      publishDate: publishDate ?? moment().format('yyyy-MM-DD HH:mm:ss'),
+      abstractname: subtitle,
+    }
+    const res = fetch('/newsCenter/add',{
+      method: 'POST',
+       body: JSON.stringify(data),
+    })
     if (res) {
       message.success('发布成功');
       setToAddedItem({
@@ -69,6 +82,8 @@ const Products = () => {
         id: '',
         publishDate: '',
         publishPerson: '',
+        displayType: 1,
+        isTop: false
       });
     } else {
       message.success('发布失败');
@@ -94,9 +109,7 @@ const Products = () => {
             </span>
           </div>
           <div className={st.previewBox}>
-            {activeTabOne ? (
-              <div>asdad</div>
-            ) : (
+            { !activeTabOne && (
               <div className={st.preview}>
                 <p>{toAddedItem.title || '标题预览'}</p>
                 <div>
@@ -106,75 +119,87 @@ const Products = () => {
             )}
           </div>
         </div>
-        <div className={st.right}>
-          <Editor initValue={initValue} setHtmlString={
-            (html) => {
-              setToAddedItem({
-                ...toAddedItem,
-                content: html
-              });
-            }
-          } />
-          <div className={st.addBox}>
-            <p className={st.top}>封面和摘要</p>
-            <div className={st.bottom}>
-              <div
-                className={st.left}
-                onClick={() => {
-                  inputRef.current?.click();
-                }}
-              >
-                <input
-                  onChange={onFileChange}
-                  ref={inputRef}
-                  accept="image/jpeg, image/png"
-                  type="file"
-                  hidden
-                />
-                {toAddedItem.img && <img src={toAddedItem.img} alt="" />}
-                {!toAddedItem.img && <PlusOutlined />}
-              </div>
-              <div className={st.right22}>
-                <Input
-                  value={toAddedItem.title}
-                  style={{ marginBottom: '10px' }}
-                  onChange={(e) => {
-                    setToAddedItem({ ...toAddedItem, title: e.target.value });
-                  }}
-                  placeholder="请输入标题内容"
-                />
-                <DatePicker
-                  style={{ marginBottom: '10px' }}
-                  placeholder="发布日期"
-                  showTime
-                  onChange={(date) => {
-                    if(date){
-                      setToAddedItem({ ...toAddedItem, publishDate: date.format('YYYY-MM-DD HH:mm:ss') });
-                    }
-                  }} />
-                <div>
-                  <Input.TextArea
-                    value={toAddedItem.subtitle}
-                    onChange={(e) => {
-                      setToAddedItem({
-                        ...toAddedItem,
-                        subtitle: e.target.value,
-                      });
+        { !activeTabOne && (
+            <div className={st.right}>
+              <Editor initValue={initValue} setHtmlString={
+                (html) => {
+                  setToAddedItem({
+                    ...toAddedItem,
+                    content: html
+                  });
+                }
+              } />
+              <div className={st.addBox}>
+                <p className={st.top}>封面和摘要</p>
+                <div className={st.bottom}>
+                  <div
+                    className={st.left}
+                    onClick={() => {
+                      inputRef.current?.click();
                     }}
-                    style={{ height: '67px' }}
-                    maxLength={150}
-                    showCount
-                    placeholder="请输入摘要"
-                  />
-                </div>
-                <div className={st.btnGroup}>
-                  <Button onClick={onSave}>保存预览</Button>
-                  <Button onClick={onPublish}>发布网站</Button>
+                  >
+                    <input
+                      onChange={onFileChange}
+                      ref={inputRef}
+                      accept="image/jpeg, image/png"
+                      type="file"
+                      hidden
+                    />
+                    {toAddedItem.img && <img src={toAddedItem.img} alt="" />}
+                    {!toAddedItem.img && <PlusOutlined />}
+                  </div>
+                  <div className={st.right22}>
+                    <Input
+                      value={toAddedItem.title}
+                      style={{ marginBottom: '10px' }}
+                      onChange={(e) => {
+                        setToAddedItem({ ...toAddedItem, title: e.target.value });
+                      }}
+                      placeholder="请输入标题内容"
+                    />
+                    <div style={{display: 'flex', marginBottom: '10px', alignItems: 'center'}}>
+                      <DatePicker
+                        style={{marginRight: '24px'}}
+                        placeholder="发布日期"
+                        showTime
+                        onChange={(date) => {
+                          if(date){
+                            setToAddedItem({ ...toAddedItem, publishDate: date.format('YYYY-MM-DD HH:mm:ss') });
+                          }
+                        }}
+                      /> 
+                      <Checkbox onChange={(e) => {setToAddedItem({ ...toAddedItem, displayType: e.target.value ? 1 : 2});}} defaultChecked>大图展示</Checkbox>
+                      <Checkbox onChange={(e) => {setToAddedItem({ ...toAddedItem, isTop: e.target.value });}}>是否置顶</Checkbox>
+                    </div>
+                    <div>
+                      <Input
+                        value={toAddedItem.subtitle}
+                        onChange={(e) => {
+                          setToAddedItem({
+                            ...toAddedItem,
+                            subtitle: e.target.value,
+                          });
+                        }}
+                        placeholder="请输入摘要"
+                      />
+                    </div>
+                    <div className={st.btnGroup}>
+                      <Button onClick={onSave}>保存预览</Button>
+                      <Button onClick={onPublish}>发布网站</Button>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
+        )}
+        { activeTabOne && (
+          <div className={st.right}>
+            <NewsList onEditNews={(newsDetail) => {
+                setActiveTabOne(false)
+                setToAddedItem(newsDetail)
+            }}/>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
