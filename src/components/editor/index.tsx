@@ -133,13 +133,29 @@ const toobarOptions = {
 };
 
 export default class ArticleEditor extends React.Component<IProps, IState> {
-  state = {
-    editorContent: {
-      blocks: [],
-      entityMap: {},
-    },
-    editorState: undefined,
-  };
+  constructor(props: IProps){
+    super(props)
+    this.state = {
+      editorContent: {
+        blocks: [],
+        entityMap: {},
+      },
+      editorState: undefined,
+    };
+  }
+  componentDidMount(){
+    const {initValue} = this.props
+    if(initValue){
+      const contentBlock = htmlToDraft(initValue);
+      if (contentBlock) {
+        const contentState = ContentState.createFromBlockArray(
+          contentBlock.contentBlocks,
+        );
+        const editorState = EditorState.createWithContent(contentState);
+        this.setState({ editorState });
+      }
+    }
+  }
   componentWillReceiveProps(nextProps: IProps) {
     if (this.props.initValue !== nextProps.initValue && nextProps.initValue) {
       // 匹配富文本编辑器格式，回显保存的内容
@@ -161,7 +177,9 @@ export default class ArticleEditor extends React.Component<IProps, IState> {
   };
   //获取html格式文本内容
   handleGetText = () => {
-    alert(draftjs(this.state.editorContent));
+    if(this.state.editorContent){
+      alert(draftjs(this.state.editorContent));
+    }
   };
   //编辑器的状态
   onEditorStateChange = (editorState: EditorState) => {
@@ -170,8 +188,9 @@ export default class ArticleEditor extends React.Component<IProps, IState> {
         editorState,
       },
       () => {
-        this.props.setHtmlString &&
-          this.props.setHtmlString(draftjs(this.state.editorContent));
+        if(this.state.editorContent){
+          this.props.setHtmlString && this.props.setHtmlString(draftjs(this.state.editorContent));
+        }
       },
     );
   };

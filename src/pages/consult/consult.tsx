@@ -26,8 +26,8 @@ const Consult = () => {
     },
     {
       title: '电话',
-      dataIndex: 'telephone',
-      key: 'telephone',
+      dataIndex: 'tel',
+      key: 'tel',
     },
     {
       title: '邮件',

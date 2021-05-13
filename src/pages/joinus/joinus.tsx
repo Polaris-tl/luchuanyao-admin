@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { Input, Button, message, DatePicker, Checkbox } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
-import { myGet, uploadFile } from '@/utils/request';
+import { myGet, myPost, uploadFile } from '@/utils/request';
 import Editor from '@/components/editor';
 import defaultImage from '@/static/imgs/default_image.png';
 import NewsList from './list';
@@ -14,9 +14,10 @@ interface IProduct {
   content: string;
   publishDate: string;
   publishPerson: string;
+  abstractname: string;
   img: string;
-  displayType: 1 | 2; // 1块元素  2 行
-  isTop: boolean; // 置顶
+  displayType: 0 | 1; // 1块元素  0行
+  isTop: 0 | 1; // 1是  0行
   file?: File;
 }
 const Products = () => {
@@ -31,7 +32,8 @@ const Products = () => {
     publishPerson: '',
     id: '',
     displayType: 1,
-    isTop: false,
+    abstractname: '',
+    isTop: 0,
   });
   const inputRef = useRef<HTMLInputElement>(null);
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,10 +54,21 @@ const Products = () => {
   const onSave = () => {};
   // 添加新闻
   const onPublish = async () => {
-    if (!toAddedItem.file) {
-      return message.warning('请上传图片');
+    let newImage = ''
+    if (!toAddedItem.img) {
+      if (!toAddedItem.file) {
+        return message.warning('请上传图片');
+      }
+      const { url } = await uploadFile(toAddedItem.file);
+      newImage = url
+    }else{
+      if (toAddedItem.file) {
+        const { url } = await uploadFile(toAddedItem.file);
+        newImage = url
+      }else{
+        newImage = toAddedItem.img
+      }
     }
-    const { url } = await uploadFile(toAddedItem.file);
     const {
       content,
       displayType,
@@ -64,9 +77,9 @@ const Products = () => {
       title,
       publishDate,
     } = toAddedItem;
-    const data = {
+    const data: any = {
       content,
-      img: url,
+      img: newImage,
       subtitle,
       title,
       displayType,
@@ -75,25 +88,45 @@ const Products = () => {
       publishDate: publishDate ?? moment().format('yyyy-MM-DD HH:mm:ss'),
       abstractname: subtitle,
     };
-    const res = fetch('/JoinUs/add', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-    if (res) {
-      message.success('发布成功');
-      setToAddedItem({
-        title: '',
-        subtitle: '',
-        content: '',
-        img: '',
-        id: '',
-        publishDate: '',
-        publishPerson: '',
-        displayType: 1,
-        isTop: false,
-      });
-    } else {
-      message.success('发布失败');
+    if(toAddedItem.id){
+      data.id = toAddedItem.id
+      const res = myPost('/JoinUs/update', data)
+      if (res) {
+        message.success('修改成功');
+        setToAddedItem({
+          title: '',
+          subtitle: '',
+          content: '',
+          img: '',
+          id: '',
+          publishDate: '',
+          publishPerson: '',
+          displayType: 1,
+          abstractname: '',
+          isTop: 0,
+        });
+      } else {
+        message.success('修改失败');
+      }
+    }else{
+      const res = myPost('/JoinUs/add', data)
+      if (res) {
+        message.success('发布成功');
+        setToAddedItem({
+          title: '',
+          subtitle: '',
+          content: '',
+          img: '',
+          id: '',
+          publishDate: '',
+          publishPerson: '',
+          displayType: 1,
+          abstractname: '',
+          isTop: 0,
+        });
+      } else {
+        message.success('发布失败');
+      }
     }
   };
   // 删除
@@ -110,7 +143,8 @@ const Products = () => {
         publishPerson: '',
         id: '',
         displayType: 1,
-        isTop: false,
+        abstractname: '',
+        isTop: 0,
       });
     } else {
       message.warning('删除失败');
@@ -196,6 +230,7 @@ const Products = () => {
                       style={{ marginRight: '24px' }}
                       placeholder="发布日期"
                       showTime
+                      value={toAddedItem.publishDate ? moment(toAddedItem.publishDate) : undefined}
                       onChange={(date) => {
                         if (date) {
                           setToAddedItem({
@@ -206,10 +241,11 @@ const Products = () => {
                       }}
                     />
                     <Checkbox
+                      checked={toAddedItem.displayType == 1}
                       onChange={(e) => {
                         setToAddedItem({
                           ...toAddedItem,
-                          displayType: e.target.value ? 1 : 2,
+                          displayType: e.target.checked ? 1 : 0,
                         });
                       }}
                       defaultChecked
@@ -217,10 +253,11 @@ const Products = () => {
                       大图展示
                     </Checkbox>
                     <Checkbox
+                      checked={toAddedItem.isTop == 1}
                       onChange={(e) => {
                         setToAddedItem({
                           ...toAddedItem,
-                          isTop: e.target.value,
+                          isTop: e.target.checked ? 1 : 0,
                         });
                       }}
                     >
@@ -229,11 +266,12 @@ const Products = () => {
                   </div>
                   <div>
                     <Input
-                      value={toAddedItem.subtitle}
+                      value={toAddedItem.abstractname}
                       onChange={(e) => {
                         setToAddedItem({
                           ...toAddedItem,
                           subtitle: e.target.value,
+                          abstractname: e.target.value,
                         });
                       }}
                       placeholder="请输入摘要"
@@ -255,6 +293,7 @@ const Products = () => {
               onEditNews={(newsDetail) => {
                 setActiveTabOne(false);
                 setToAddedItem(newsDetail);
+                setInitValue(newsDetail.content)
               }}
             />
           </div>

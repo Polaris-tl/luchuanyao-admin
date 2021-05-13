@@ -15,7 +15,7 @@ const Products = () => {
       <div style={{ width: '1200px', margin: 'auto' }}>
         {/*banner 图片、视频上传 */}
         {/* 1产品技术 2服务案例 3新闻中心 4加入我们 5解决方案 6品牌战略 */}
-        <BannerUploader resourceId="2" />
+        <BannerUploader resourceId="6" />
         {/*新增 */}
         <ItemAdd
           item={currentItem}

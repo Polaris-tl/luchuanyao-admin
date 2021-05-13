@@ -16,8 +16,8 @@ interface INews {
   publishPerson: string,
   title: string,
   voteCount: string,
-  displayType: 1 |2,
-  isTop: boolean
+  displayType: 1 | 0,
+  isTop: 0 | 1,
 }
 interface IProps {
   onEditNews: (newsDetail: INews) => void;
@@ -33,6 +33,7 @@ const NewsList: React.FC<IProps> = (props) => {
       message.success('删除成功');
       setCheckedList([])
       const res2 = await myGet<INews[]>('/NewsCenter/selectAll')
+      afterSort(res2)
       res2 && setNews(res2)
     }else{
       message.warning('删除失败');
@@ -49,9 +50,20 @@ const NewsList: React.FC<IProps> = (props) => {
     target && props.onEditNews(target)
   }
 
+  const afterSort = (origin: any) => {
+    origin.sort((a:any,b:any) => {
+      if(b.displayType != a.displayType){
+        return b.displayType - a.displayType
+      }else{
+        return b.isTop - a.isTop
+      }
+    })
+  }
+
   useEffect(() => {
     (async () => {
       const res = await myGet<INews[]>('/NewsCenter/selectAll')
+      afterSort(res)
       res && setNews(res)
     })()
   },[])
@@ -86,7 +98,7 @@ const NewsList: React.FC<IProps> = (props) => {
       <div className={st.list}  style={{display: 'flex', flexWrap: 'wrap'}}>
           {
             news.map((item,idx) => {
-              if(idx < 2){
+              if(item.displayType == 1){
                 return(
                   <div className={st.block} key={item.id}>
                       <div className={st.imgBox}>
@@ -133,13 +145,11 @@ const NewsList: React.FC<IProps> = (props) => {
                           const index = checkedList.findIndex(item2 => item2 == item.id)
                           if(e.target.checked){
                             if(index == -1){
-                              // setCheckedList([...checkedList, item.id])
                               setCheckedList([item.id])
                             }
                           }else{
                             if(index != -1){
                               checkedList.splice(index, 1)
-                              // setCheckedList([...checkedList])
                               setCheckedList([])
                             }
                           }
@@ -148,7 +158,7 @@ const NewsList: React.FC<IProps> = (props) => {
                       <span>{item.title}</span>
                     </p>
                     <p className={st.p2}>
-                      <span>{item.publishPerson}</span>
+                      <span style={{marginRight: '30px'}}>{item.publishPerson}</span>
                       <span>{moment(item.publishDate).format('yyyy-MM-DD')}</span>
                     </p>
                   </div>
