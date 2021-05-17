@@ -1,42 +1,26 @@
 import { Table, Button, Popover, Input, Popconfirm } from 'antd';
 import { useState, useEffect } from 'react';
-import { myPost, myGet } from '@/utils/request';
+import { myPost, myPost2, myGet } from '@/utils/request';
 import st from './authManagement.less';
+import { useModel } from 'umi';
 
-interface IConsult {
-  companyName: string;
-  companyScale: string;
-  consultContent: string;
-  email: string;
-  id: string;
-  name: string;
-}
-const DataManagement = () => {
-  // 删除用户事件
-  const confirmDeleteUser = async (id: string) => {
-    const res = await myGet('/User/deleteById', { id });
-    if (res) {
-      const res2 = await myGet('/User/selectAll');
-      setData(res2);
-    }
-  };
-  // 修改
-  const updateAuth = async (id: string, password: string) => {
-    const res = await myPost('/User/update', {
+const AuthManagement = () => {
+  const { user } = useModel('useAuthModel', (model) => ({ user: model.user }));
+  const updateName = async (id: string, name: string) => {
+    const res = await myPost('/Resource/update', {
       id,
-      password,
+      name,
     });
     if (res) {
-      const res2 = await myGet('/User/selectAll');
-      setData(res2);
-      document.body.click();
+      const resource = await myGet('/Resource/selectAll');
+      setResource(resource);
     }
   };
   const columns: any = [
     {
       title: '网站子页面名称',
-      dataIndex: 'pageName',
-      key: 'pageName',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: '操作',
@@ -46,7 +30,7 @@ const DataManagement = () => {
           <div>
             <Popover
               placement="top"
-              title={'请输入新密码'}
+              title={'请输入页面名称'}
               content={
                 <div>
                   <Input />
@@ -61,10 +45,10 @@ const DataManagement = () => {
                       type="primary"
                       size="small"
                       onClick={(e) => {
-                        const password = (e.target as any).parentNode.parentNode.parentNode.querySelector(
+                        const name = (e.target as any).parentNode.parentNode.parentNode.querySelector(
                           'input',
                         ).value;
-                        updateAuth(record.id, password);
+                        updateName(record.id, name);
                       }}
                     >
                       确认
@@ -76,9 +60,7 @@ const DataManagement = () => {
             >
               <Button type="link">更名</Button>
             </Popover>
-            <Button type="link">
-              配置界面
-            </Button>
+            <Button type="link">配置界面</Button>
           </div>
         );
       },
@@ -87,8 +69,8 @@ const DataManagement = () => {
   const columns2: any = [
     {
       title: '管理端页面名称',
-      dataIndex: 'pageName',
-      key: 'pageName',
+      dataIndex: 'name',
+      key: 'name',
     },
     {
       title: '操作',
@@ -98,7 +80,7 @@ const DataManagement = () => {
           <div>
             <Popover
               placement="top"
-              title={'请输入新密码'}
+              title={'请输入页面名称'}
               content={
                 <div>
                   <Input />
@@ -113,10 +95,10 @@ const DataManagement = () => {
                       type="primary"
                       size="small"
                       onClick={(e) => {
-                        const password = (e.target as any).parentNode.parentNode.parentNode.querySelector(
+                        const name = (e.target as any).parentNode.parentNode.parentNode.querySelector(
                           'input',
                         ).value;
-                        updateAuth(record.id, password);
+                        updateName(record.id, name);
                       }}
                     >
                       确认
@@ -128,69 +110,61 @@ const DataManagement = () => {
             >
               <Button type="link">更名</Button>
             </Popover>
-            <Button type="link">
-              配置界面
-            </Button>
+            <Button type="link">配置界面</Button>
           </div>
         );
       },
     },
   ];
-
-  const [data, setData] = useState<IConsult[]>([]);
+  const [resource, setResource] = useState<any[]>([]);
   useEffect(() => {
-    myPost('/User/login',{
-      username: 'admin',
-      password: '111111'
-    });
     (async () => {
-      const res = await myGet('/VisitRecord/statisticsVisitCount');
-      setData(res.map((item: any) => {
-        const res: any = {}
-        for(const key in item){
-          res.pageName = key
-        }
-        return res
-      }));
+      const resource = await myGet('/Resource/selectAll');
+      setResource(resource);
     })();
   }, []);
   return (
     <div>
       <div className={st.main}>
-        <div style={{display: 'flex',justifyContent:'space-between'}}>
-          <Table 
-            rowKey='pageName'
-            style={{width: '50%'}}
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Table
+            rowKey="id"
+            style={{ width: '50%' }}
             rowSelection={{
-              onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-              },
-              columnTitle: <div style={{width:'30px'}}>选择</div>
+              columnTitle: <div style={{ width: '30px' }}>选择</div>,
             }}
-            pagination={false} 
-            columns={columns} 
-            dataSource={data} 
-            bordered 
+            pagination={false}
+            columns={columns}
+            dataSource={resource}
+            bordered
           />
-          <Table 
-            rowKey='pageName'
-            style={{width: '50%'}} 
+          <Table
+            rowKey="id"
+            style={{ width: '50%' }}
             rowSelection={{
               onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+                myPost2('/User/grantResource', {
+                  userId: (user as any).userId,
+                  resourceIds: selectedRowKeys,
+                });
               },
-              columnTitle: <div style={{width:'30px'}}>选择</div>
+              columnTitle: <div style={{ width: '30px' }}>选择</div>,
+              defaultSelectedRowKeys: (user as any).resources.map(
+                (item: any) => item.id,
+              ),
             }}
-            pagination={false} 
-            columns={columns2} 
-            dataSource={data} 
-            bordered 
+            pagination={false}
+            columns={columns2}
+            dataSource={resource}
+            bordered
           />
         </div>
-        
-        <p>注：左方黄色栏列表的勾选和编辑，功能为开放给游客用户查看；右方的蓝色列的勾选和编辑，功能为开放给企业管理员用户进行内容编辑、页面预览和发布</p>
+
+        <p>
+          注：左方黄色栏列表的勾选和编辑，功能为开放给游客用户查看；右方的蓝色列的勾选和编辑，功能为开放给企业管理员用户进行内容编辑、页面预览和发布
+        </p>
       </div>
     </div>
   );
 };
-export default DataManagement;
+export default AuthManagement;
