@@ -85,7 +85,7 @@ const Products = () => {
       displayType,
       isTop,
       publishPerson: 1,
-      publishDate: publishDate ?? moment().format('yyyy-MM-DD HH:mm:ss'),
+      publishDate: publishDate ? publishDate : moment().format('yyyy-MM-DD HH:mm:ss'),
       abstractname: subtitle,
     };
     if(toAddedItem.id){

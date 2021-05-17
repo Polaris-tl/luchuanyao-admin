@@ -6,6 +6,7 @@ export default defineConfig({
   },
   routes: [
     { path: '/', exact: true, component: '@/pages/index' },
+    { path: '/login', exact: true, component: '@/pages/login/login' },
     { path: '/main', exact: false, component: '@/pages/index' },
   ],
   fastRefresh: {},

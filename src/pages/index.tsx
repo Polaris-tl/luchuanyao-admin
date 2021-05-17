@@ -14,7 +14,7 @@ import Strategy from './strategy/strategy';
 import Consult from './consult/consult';
 import DataManagement from './dataManagement/dataManagement';
 import UserManagement from './userManagement/userManagement';
-import AuthManagement from './authManegement/authManegement';
+import AuthManagement from './authManagement/authManagement';
 import './index.less';
 
 export default function IndexPage() {

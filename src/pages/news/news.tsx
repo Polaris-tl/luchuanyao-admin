@@ -85,7 +85,7 @@ const Products = () => {
       displayType,
       isTop,
       publishPerson: 1,
-      publishDate: publishDate ?? moment().format('yyyy-MM-DD HH:mm:ss'),
+      publishDate: publishDate ? publishDate : moment().format('yyyy-MM-DD HH:mm:ss'),
       abstractname: subtitle,
     };
     if(toAddedItem.id){
@@ -229,7 +229,6 @@ const Products = () => {
                     <DatePicker
                       style={{ marginRight: '24px' }}
                       placeholder="发布日期"
-                      showTime
                       value={toAddedItem.publishDate ? moment(toAddedItem.publishDate) : undefined}
                       onChange={(date) => {
                         if (date) {

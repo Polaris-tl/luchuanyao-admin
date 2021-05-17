@@ -21,41 +21,53 @@ const DataManagement = () => {
     },
     {
       title: '页面名称',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'pageName',
+      key: 'pageName',
     },
     {
       title: '近一年度访问（次）',
-      dataIndex: 'telephone',
-      key: 'telephone',
+      dataIndex: 'countByYear',
+      key: 'countByYear',
     },
     {
       title: '上一季度访问（次）',
-      dataIndex: 'email',
-      key: 'email',
+      dataIndex: 'countByQuarter',
+      key: 'countByQuarter',
     },
     {
       title: '上一月度访问（次）',
-      key: 'companyName',
-      dataIndex: 'companyName',
+      key: 'countByMonth',
+      dataIndex: 'countByMonth',
     },
     {
       title: '上一周访问（次）',
-      dataIndex: 'companyScale',
-      key: 'companyScale',
+      dataIndex: 'countByWeek',
+      key: 'countByWeek',
     },
     {
       title: '今日点击访问',
-      dataIndex: 'reason',
-      key: 'reason',
+      dataIndex: 'countToday',
+      key: 'countToday',
     },
   ];
 
   const [data, setData] = useState<IConsult[]>([]);
   useEffect(() => {
     (async () => {
-      const res = await myGet('/VisitRecord/selectAll');
-      setData(res);
+      // const res = await myGet('/VisitRecord/selectAll');
+      const res = await myGet('/VisitRecord/statisticsVisitCount');
+      setData(res.map((item: any) => {
+        const res: any = {}
+        for(const key in item){
+          res.pageName = key
+          res.countByYear = item[key].selectLastYear
+          res.countByQuarter = item[key].selectLastQuarter
+          res.countByMonth = item[key].selectLastMonth
+          res.countByWeek = item[key].selectLastWeek
+          res.countToday = item[key].selectCurrentDay
+        }
+        return res
+      }));
     })();
   }, []);
   return (

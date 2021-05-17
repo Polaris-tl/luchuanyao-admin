@@ -36,11 +36,13 @@ const Consult = () => {
     },
     {
       title: '公司名称',
+      width: 120,
       key: 'companyName',
       dataIndex: 'companyName',
     },
     {
       title: '公司规模',
+      width: 120,
       dataIndex: 'companyScale',
       key: 'companyScale',
     },
@@ -49,6 +51,12 @@ const Consult = () => {
       dataIndex: 'consultContent',
       key: 'consultContent',
     },
+    {
+      title: '咨询时间',
+      width: 160,
+      dataIndex: 'createtime',
+      key: 'createtime',
+    }
   ];
   const [data, setData] = useState<IConsult[]>([]);
   useEffect(() => {
