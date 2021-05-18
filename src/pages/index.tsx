@@ -1,7 +1,7 @@
 import Header from '@/components/header/header';
 import NavBar from '@/components/navBar/navBar';
 import Footer from '@/components/footer/footer';
-import { Switch, Route, Link } from 'umi';
+import { Switch, Route, Link, Redirect } from 'umi';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/lib/locale/zh_CN';
 import Home from './home/home';
@@ -70,9 +70,10 @@ export default function IndexPage() {
             </Switch>
           </>
         ) : (
-          <div style={styles}>
-            您没有权限，请<Link to="/login">登录</Link>！
-          </div>
+          <Redirect to='/login' />
+          // <div style={styles}>
+          //   您没有权限，请<Link to="/login">登录</Link>！
+          // </div>
         )}
 
         <Footer />

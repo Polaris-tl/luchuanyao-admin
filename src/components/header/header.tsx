@@ -25,7 +25,7 @@ const Header = () => {
               {year + '-' + month.padStart(2, '0') + '-' + day.padStart(2, '0')}{' '}
               {'星期' + weekMaps[date.getDay()]}
             </span>
-            <span>水手</span>
+            <span>{user.username || '水手'}</span>
             <span className={st.avator}>
               <Popover
                 content={

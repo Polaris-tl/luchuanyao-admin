@@ -17,6 +17,7 @@ export default function useAuthModel() {
     });
     if (userInfo && userInfo.status == 1) {
       message.success('登录成功！');
+      userInfo.data.username = username
       sessionStorage.setItem('user', JSON.stringify(userInfo.data));
       setUser(userInfo.data);
       history.push('/');

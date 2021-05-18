@@ -127,37 +127,39 @@ const AuthManagement = () => {
     <div>
       <div className={st.main}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <Table
-            rowKey="id"
-            style={{ width: '50%' }}
-            rowSelection={{
-              columnTitle: <div style={{ width: '30px' }}>选择</div>,
-            }}
-            pagination={false}
-            columns={columns}
-            dataSource={resource}
-            bordered
-          />
-          <Table
-            rowKey="id"
-            style={{ width: '50%' }}
-            rowSelection={{
-              onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-                myPost2('/User/grantResource', {
-                  userId: (user as any).userId,
-                  resourceIds: selectedRowKeys,
-                });
-              },
-              columnTitle: <div style={{ width: '30px' }}>选择</div>,
-              defaultSelectedRowKeys: (user as any).resources.map(
-                (item: any) => item.id,
-              ),
-            }}
-            pagination={false}
-            columns={columns2}
-            dataSource={resource}
-            bordered
-          />
+          <div className={st.table1}>
+            <Table
+              rowKey="id"
+              rowSelection={{
+                columnTitle: <div style={{ width: '30px' }}>选择</div>,
+              }}
+              pagination={false}
+              columns={columns}
+              dataSource={resource}
+              bordered
+            />
+          </div>
+          <div className={st.table2}>
+              <Table
+                rowKey="id"
+                rowSelection={{
+                  onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
+                    myPost2('/User/grantResource', {
+                      userId: (user as any).userId,
+                      resourceIds: selectedRowKeys,
+                    });
+                  },
+                  columnTitle: <div style={{ width: '30px' }}>选择</div>,
+                  defaultSelectedRowKeys: (user as any).resources.map(
+                    (item: any) => item.id,
+                  ),
+                }}
+                pagination={false}
+                columns={columns2}
+                dataSource={resource}
+                bordered
+              />
+          </div>
         </div>
 
         <p>

@@ -1,5 +1,19 @@
 .main {
   width: 1200px;
-  min-height: 600px;
+  min-height: calc(100vh - 195px);
   margin: auto;
+  .table1{
+    width: 50%;
+    :global(.ant-table-thead .ant-table-cell){
+      background: #fff686;
+      border-right: 1px solid #eaeaea !important;
+    }
+  }
+  .table2{
+    width: 50%;
+    :global(.ant-table-thead .ant-table-cell){
+      background: #54b0ff;
+      border-right: 1px solid #8ecbff !important;
+    }
+  }
 }
