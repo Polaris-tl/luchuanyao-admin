@@ -5,7 +5,7 @@ import {
   RawDraftContentState,
 } from 'react-draft-wysiwyg';
 import { EditorState, Entity, AtomicBlockUtils, ContentState } from 'draft-js';
-import draftjs from 'draftjs-to-html';
+import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { uploadFile } from '@/utils/request';
 import VideoRenderer from './video';
@@ -54,64 +54,6 @@ const mediaBlockRenderer = (block: ContentBlock) => {
   return null;
 };
 
-class CustomOption extends React.Component<any, any> {
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      expanded: false,
-    };
-  }
-  addVideo() {
-    this.setState({ expanded: !this.state.expanded });
-    const { editorState, onChange, config } = this.props as {
-      editorState: EditorState;
-      onChange: (data: EditorState) => void;
-      config: any;
-    };
-    const entityKey = editorState
-      .getCurrentContent()
-      .createEntity('video', 'MUTABLE', {
-        src:
-          'https://vd3.bdstatic.com/mda-mdrkbvrn46fx7cq7/fhd/cae_h264_nowatermark/1619447036/mda-mdrkbvrn46fx7cq7.mp4?v_from_s=nj_haokan_4469&auth_key=1619510375-0-0-2bb05663cd7aea4be44a4d6743cbb9f6&bcevod_channel=searchbox_feed&pd=1&pt=3&abtest=3000165_1',
-      })
-      .getLastCreatedEntityKey();
-    const newEditorState = AtomicBlockUtils.insertAtomicBlock(
-      editorState,
-      entityKey,
-      ' ',
-    );
-    // onChange(newEditorState);
-  }
-
-  doExpand = () => {
-    this.setState({
-      expanded: true,
-    });
-  };
-
-  doCollapse = () => {
-    this.setState({
-      expanded: false,
-    });
-  };
-
-  render() {
-    const { expanded } = this.state;
-    return (
-      <div>
-        <div
-          onClick={() => {
-            this.addVideo();
-          }}
-        >
-          视频
-        </div>
-        {expanded && <div>奥术大师大所多</div>}
-      </div>
-    );
-  }
-}
-
 const toobarOptions = {
   image: {
     uploadCallback: async (data: File) => {
@@ -126,15 +68,19 @@ const toobarOptions = {
     className: undefined,
     component: undefined,
     popupClassName: undefined,
-    colors: [
-      '#22334a', '#c8d2e2', '#f69c44',
-    ],
+    colors: ['#22334a', '#c8d2e2', '#f69c44'],
   },
 };
 
+// 自定义draftjs-to-html转换函数
+const customEntityTransform = (a: any, b: any) => {
+  if (a.type == 'video') {
+    return `<video controls src='${a.data.src}'></video>`;
+  }
+};
 export default class ArticleEditor extends React.Component<IProps, IState> {
-  constructor(props: IProps){
-    super(props)
+  constructor(props: IProps) {
+    super(props);
     this.state = {
       editorContent: {
         blocks: [],
@@ -143,9 +89,9 @@ export default class ArticleEditor extends React.Component<IProps, IState> {
       editorState: undefined,
     };
   }
-  componentDidMount(){
-    const {initValue} = this.props
-    if(initValue){
+  componentDidMount() {
+    const { initValue } = this.props;
+    if (initValue) {
       const contentBlock = htmlToDraft(initValue);
       if (contentBlock) {
         const contentState = ContentState.createFromBlockArray(
@@ -177,10 +123,11 @@ export default class ArticleEditor extends React.Component<IProps, IState> {
   };
   //获取html格式文本内容
   handleGetText = () => {
-    if(this.state.editorContent){
-      alert(draftjs(this.state.editorContent));
+    if (this.state.editorContent) {
+      alert(draftToHtml(this.state.editorContent));
     }
   };
+
   //编辑器的状态
   onEditorStateChange = (editorState: EditorState) => {
     this.setState(
@@ -188,8 +135,16 @@ export default class ArticleEditor extends React.Component<IProps, IState> {
         editorState,
       },
       () => {
-        if(this.state.editorContent){
-          this.props.setHtmlString && this.props.setHtmlString(draftjs(this.state.editorContent));
+        if (this.state.editorContent) {
+          this.props.setHtmlString &&
+            this.props.setHtmlString(
+              draftToHtml(
+                this.state.editorContent,
+                undefined,
+                undefined,
+                customEntityTransform,
+              ),
+            );
         }
       },
     );
