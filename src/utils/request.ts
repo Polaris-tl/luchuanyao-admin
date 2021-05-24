@@ -46,7 +46,7 @@ export const myPost2: <T = any>(url: string, parameter: any) => Promise<T> = (
   parameter,
 ) => {
   return axios.post(url, parameter, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: { 'Content-Type': 'application/json' },
   });
 };
 

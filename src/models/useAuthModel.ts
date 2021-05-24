@@ -20,7 +20,7 @@ export default function useAuthModel() {
       userInfo.data.username = username
       sessionStorage.setItem('user', JSON.stringify(userInfo.data));
       setUser(userInfo.data);
-      history.push('/');
+      history.push('/main/news');
     } else {
       message.error('登录失败！');
       setUser(null);

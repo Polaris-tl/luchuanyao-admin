@@ -1,11 +1,29 @@
-import { Table, Button, Popover, Input, Popconfirm } from 'antd';
+import { Table, Button, Popover, Input, Checkbox } from 'antd';
 import { useState, useEffect } from 'react';
 import { myPost, myPost2, myGet } from '@/utils/request';
 import st from './authManagement.less';
 import { useModel } from 'umi';
 
-const AuthManagement = () => {
+const AuthManagement: React.FC<{userId: string}> = (props) => {
   const { user } = useModel('useAuthModel', (model) => ({ user: model.user }));
+  const [visitor, setVisitor] = useState([])
+  const [admin, setAdmin] = useState([])
+  useEffect(() => {
+    if(props.userId == '0'){
+      myGet('/User/hasResourceFromUser', { id: props.userId })
+      .then((data) => {
+        setVisitor(data.map(
+          (item: any) => item.id,
+        ))
+      })
+    }
+    myGet('/User/hasResourceFromUser', { id: props.userId })
+    .then((data) => {
+      setAdmin(data.map(
+        (item: any) => item.id,
+      ))
+    })
+  },[props.userId])
   const updateName = async (id: string, name: string) => {
     const res = await myPost('/Resource/update', {
       id,
@@ -127,39 +145,51 @@ const AuthManagement = () => {
     <div>
       <div className={st.main}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-          <div className={st.table1}>
-            <Table
-              rowKey="id"
-              rowSelection={{
-                columnTitle: <div style={{ width: '30px' }}>选择</div>,
-              }}
-              pagination={false}
-              columns={columns}
-              dataSource={resource}
-              bordered
-            />
-          </div>
-          <div className={st.table2}>
-              <Table
-                rowKey="id"
-                rowSelection={{
-                  onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-                    myPost2('/User/grantResource', {
-                      userId: (user as any).userId,
-                      resourceIds: selectedRowKeys,
-                    });
-                  },
-                  columnTitle: <div style={{ width: '30px' }}>选择</div>,
-                  defaultSelectedRowKeys: (user as any).resources.map(
-                    (item: any) => item.id,
-                  ),
-                }}
-                pagination={false}
-                columns={columns2}
-                dataSource={resource}
-                bordered
-              />
-          </div>
+          {
+            props.userId == '0' ? (
+              <div className={st.table1}>
+                <Table
+                  rowKey="id"
+                  key={visitor.join()}
+                  rowSelection={{
+                    columnTitle: <div style={{ width: '30px' }}>选择</div>,
+                    onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
+                      myPost('/User/grantResource', {
+                        userId: 0,
+                        resourceIds: selectedRowKeys,
+                      });
+                    },
+                    defaultSelectedRowKeys: visitor
+                  }}
+                  pagination={false}
+                  columns={columns}
+                  dataSource={resource}
+                  bordered
+                />
+              </div>
+            ) : (
+              <div className={st.table2}>
+                <Table
+                  rowKey="id"
+                  key={admin.join()}
+                  rowSelection={{
+                    onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
+                      myPost('/User/grantResource', {
+                        userId: props.userId,
+                        resourceIds: selectedRowKeys,
+                      });
+                    },
+                    columnTitle: <div style={{ width: '30px' }}>选择</div>,
+                    defaultSelectedRowKeys: admin,
+                  }}
+                  pagination={false}
+                  columns={columns2}
+                  dataSource={resource}
+                  bordered
+                />
+            </div>
+            )
+          }
         </div>
 
         <p>

@@ -1,13 +1,16 @@
-import { Table, Button, Popover, Input, Popconfirm } from 'antd';
+import { Table, Button, Popover, Input, Popconfirm, Drawer } from 'antd';
 import { useState, useEffect } from 'react';
 import { myPost, myGet } from '@/utils/request';
 import st from './userManagement.less';
+import AuthManagement from '@/pages/authManagement/authManagement'
 interface IUser {
   id: string;
   password: string;
   username: string;
 }
 const DataManagement = () => {
+  const [visible, setVisible] = useState(false);
+  const [selectedId, setSelectedId] = useState('');
   const columns: any = [
     {
       title: '序号',
@@ -28,8 +31,11 @@ const DataManagement = () => {
     {
       title: '设置权限',
       dataIndex: null,
-      render: () => {
-        return <Button type="link">设置权限</Button>;
+      render: (text: any, record: any) => {
+        return <Button type="link" onClick={() => {
+          setVisible(true)
+          setSelectedId(record.id)
+        }}>设置权限</Button>;
       },
     },
     {
@@ -87,6 +93,7 @@ const DataManagement = () => {
       },
     },
   ];
+  
   const [data, setData] = useState<IUser[]>([]);
   // 删除用户事件
   const confirmDeleteUser = async (id: string) => {
@@ -118,6 +125,16 @@ const DataManagement = () => {
     <div>
       <div className={st.main}>
         <Table columns={columns} dataSource={data} bordered />
+        <Drawer
+          title="权限设置"
+          width={1200}
+          onClose={() => {
+            setVisible(false);
+          }}
+          visible={visible}
+        >
+          <AuthManagement userId={selectedId}/>
+        </Drawer>
       </div>
     </div>
   );

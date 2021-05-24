@@ -17,7 +17,7 @@ const Header = () => {
   return (
     <div className={st.header}>
       <div className={st.box}>
-        <div className={st.logo}></div>
+        <div className={st.logo} onClick={() => location.href = 'http://www.theseustech.cn'}></div>
         <div className={st.left}>摇橹船科技网站平台信息管理系统</div>
         {user && (
           <div className={st.right}>
