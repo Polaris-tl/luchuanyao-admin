@@ -15,6 +15,8 @@ import Consult from './consult/consult';
 import DataManagement from './dataManagement/dataManagement';
 import UserManagement from './userManagement/userManagement';
 import AuthManagement from './authManagement/authManagement';
+import Other1 from './other1/products';
+import Other2 from './other2/products';
 import { useModel } from 'umi';
 import './index.less';
 
@@ -51,6 +53,8 @@ export default function IndexPage() {
               <Route path="/main/products" component={withAuth(Products)} />
               <Route path="/main/solutions" component={withAuth(Solutions)} />
               <Route path="/main/cases" component={withAuth(Cases)} />
+              <Route path="/main/other1" component={withAuth(Other1)} />
+              <Route path="/main/other2" component={withAuth(Other2)} />
               <Route path="/main/news" component={withAuth(News)} />
               <Route path="/main/strategy" component={withAuth(Strategy)} />
               <Route path="/main/joinus" component={withAuth(JoinUs)} />
@@ -70,7 +74,7 @@ export default function IndexPage() {
             </Switch>
           </>
         ) : (
-          <Redirect to='/login' />
+          <Redirect to="/login" />
           // <div style={styles}>
           //   您没有权限，请<Link to="/login">登录</Link>！
           // </div>

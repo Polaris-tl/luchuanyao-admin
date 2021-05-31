@@ -2,7 +2,7 @@ import { Table, Button, Popover, Input, Popconfirm, Drawer } from 'antd';
 import { useState, useEffect } from 'react';
 import { myPost, myGet } from '@/utils/request';
 import st from './userManagement.less';
-import AuthManagement from '@/pages/authManagement/authManagement'
+import AuthManagement from '@/pages/authManagement/authManagement';
 interface IUser {
   id: string;
   password: string;
@@ -27,15 +27,25 @@ const DataManagement = () => {
       title: '用户密码',
       dataIndex: 'password',
       key: 'password',
+      render: (text: any) => {
+        return text ? text : '--';
+      },
     },
     {
       title: '设置权限',
       dataIndex: null,
       render: (text: any, record: any) => {
-        return <Button type="link" onClick={() => {
-          setVisible(true)
-          setSelectedId(record.id)
-        }}>设置权限</Button>;
+        return (
+          <Button
+            type="link"
+            onClick={() => {
+              setVisible(true);
+              setSelectedId(record.id);
+            }}
+          >
+            设置权限
+          </Button>
+        );
       },
     },
     {
@@ -44,56 +54,68 @@ const DataManagement = () => {
       render: (text: any, record: any, index: number) => {
         return (
           <div>
-            <Popover
-              placement="top"
-              title={'请输入新密码'}
-              content={
-                <div>
-                  <Input />
-                  <div
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'flex-end',
-                      marginTop: '11px',
-                    }}
-                  >
-                    <Button
-                      type="primary"
-                      size="small"
-                      onClick={(e) => {
-                        const password = (e.target as any).parentNode.parentNode.parentNode.querySelector(
-                          'input',
-                        ).value;
-                        updateUser(record.id, password);
+            {record.id != 0 ? (
+              <Popover
+                placement="top"
+                title={'请输入新密码'}
+                content={
+                  <div>
+                    <Input />
+                    <div
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'flex-end',
+                        marginTop: '11px',
                       }}
                     >
-                      确认
-                    </Button>
+                      <Button
+                        type="primary"
+                        size="small"
+                        onClick={(e) => {
+                          const password = (e.target as any).parentNode.parentNode.parentNode.querySelector(
+                            'input',
+                          ).value;
+                          updateUser(record.id, password);
+                        }}
+                      >
+                        确认
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              }
-              trigger="click"
-            >
-              <Button type="link">修改密码</Button>
-            </Popover>
-            <Popconfirm
-              title="是否确认删除"
-              onConfirm={() => {
-                confirmDeleteUser(record.id);
-              }}
-              okText="确认"
-              cancelText="取消"
-            >
-              <Button type="link" danger>
+                }
+                trigger="click"
+              >
+                <Button type="link">修改密码</Button>
+              </Popover>
+            ) : (
+              <Button type="link" disabled>
+                修改密码
+              </Button>
+            )}
+            {record.id != 0 && record.id != 1 ? (
+              <Popconfirm
+                title="是否确认删除"
+                onConfirm={() => {
+                  confirmDeleteUser(record.id);
+                }}
+                okText="确认"
+                cancelText="取消"
+              >
+                <Button type="link" danger>
+                  删除用户
+                </Button>
+              </Popconfirm>
+            ) : (
+              <Button type="link" danger disabled>
                 删除用户
               </Button>
-            </Popconfirm>
+            )}
           </div>
         );
       },
     },
   ];
-  
+
   const [data, setData] = useState<IUser[]>([]);
   // 删除用户事件
   const confirmDeleteUser = async (id: string) => {
@@ -133,7 +155,7 @@ const DataManagement = () => {
           }}
           visible={visible}
         >
-          <AuthManagement userId={selectedId}/>
+          <AuthManagement userId={selectedId} />
         </Drawer>
       </div>
     </div>
