@@ -17,8 +17,9 @@ export default function useAuthModel() {
     });
     if (userInfo && userInfo.status == 1) {
       message.success('登录成功！');
-      userInfo.data.username = username
+      userInfo.data.username = username;
       sessionStorage.setItem('user', JSON.stringify(userInfo.data));
+      localStorage.setItem('token', userInfo.data.token);
       setUser(userInfo.data);
       history.push('/main/news');
     } else {
@@ -30,6 +31,7 @@ export default function useAuthModel() {
   const signout = useCallback(() => {
     setUser(null);
     sessionStorage.removeItem('user');
+    localStorage.removeItem('token');
   }, []);
 
   return {
