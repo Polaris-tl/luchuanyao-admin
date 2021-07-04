@@ -1,6 +1,6 @@
 import { Table, Button, Popover, Input, Checkbox } from 'antd';
 import { useState, useEffect } from 'react';
-import { myPost, myPost2, myGet } from '@/utils/request';
+import { myPost, myPost2, myGet, visitRecordAdd } from '@/utils/request';
 import st from './authManagement.less';
 import { useModel } from 'umi';
 
@@ -9,6 +9,7 @@ const AuthManagement: React.FC<{ userId: string }> = (props) => {
   const [visitor, setVisitor] = useState([]);
   const [admin, setAdmin] = useState([]);
   useEffect(() => {
+    visitRecordAdd('7');
     if (props.userId == '0') {
       myGet('/User/hasResourceFromUser', { id: props.userId }).then((data) => {
         setVisitor(data.map((item: any) => item.id));

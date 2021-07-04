@@ -1,5 +1,6 @@
 import axios from 'axios';
-
+import { history } from 'umi';
+import { message } from 'antd';
 axios.defaults.timeout = 5000;
 axios.defaults.baseURL = 'http://39.104.202.5:8080';
 // 添加请求拦截器
@@ -16,7 +17,15 @@ axios.interceptors.request.use(
 
 // 添加响应拦截器
 axios.interceptors.response.use(
-  (res) => res.data,
+  (res) => {
+    if (res.data == 'token过期') {
+      message.error('登录过期，请重新登录');
+      history.push('/login');
+      return [];
+    } else {
+      return res.data;
+    }
+  },
   (error) => Promise.reject(error),
 );
 
@@ -68,4 +77,8 @@ export const uploadFiles: (
   param.append('resourceId', resourceId);
   file.forEach((item) => param.append('files', item));
   return axios.post('Upload/imgUpload4Banner', param, { timeout: 0 });
+};
+
+export const visitRecordAdd: (id: string) => Promise<any> = (id) => {
+  return axios.post('/VisitRecord/add', { resourceId: id });
 };

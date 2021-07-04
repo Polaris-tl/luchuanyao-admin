@@ -16,7 +16,7 @@ import DataManagement from './dataManagement/dataManagement';
 import UserManagement from './userManagement/userManagement';
 import AuthManagement from './authManagement/authManagement';
 import Other1 from './other1/products';
-import Other2 from './other2/products';
+import Other2 from './other2/news';
 import { useModel } from 'umi';
 import './index.less';
 

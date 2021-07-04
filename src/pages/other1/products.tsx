@@ -17,19 +17,19 @@ const Products = () => {
         {/* 1产品技术 2服务案例 3新闻中心 4加入我们 5解决方案 6品牌战略 */}
         <BannerUploader resourceId="9" />
         {/*新增 */}
-        {/* <ItemAdd 
-          item={currentItem}  
-          addUrl='ProductTech/add' 
-          updateUrl='ProductTech/update' 
-          deleteUrl='ProductTech/deleteById'
+        <ItemAdd
+          item={currentItem}
+          addUrl="ProductTech/add"
+          updateUrl="ProductTech/update"
+          deleteUrl="ProductTech/deleteById"
           refreshList={refreshList}
-        /> */}
+        />
         {/*修改 */}
-        {/* <ItemEditList
-          ref={itemListRef} 
-          listUrl='ProductTech/selectAll' 
-          onClick={(item) => setCurrentItem(item)} 
-        /> */}
+        <ItemEditList
+          ref={itemListRef}
+          listUrl="ProductTech/selectAll"
+          onClick={(item) => setCurrentItem(item)}
+        />
       </div>
     </div>
   );
