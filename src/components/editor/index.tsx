@@ -74,7 +74,7 @@ const toobarOptions = {
 
 // 自定义draftjs-to-html转换函数
 const customEntityTransform = (a: any, b: any) => {
-  if (a.type == 'video') {
+  if (a.type.toLocaleLowerCase() == 'video') {
     return `<video controls src='${a.data.src}'></video>`;
   }
 };
@@ -91,8 +91,10 @@ export default class ArticleEditor extends React.Component<IProps, IState> {
   }
   componentDidMount() {
     const { initValue } = this.props;
+    console.log(initValue);
     if (initValue) {
       const contentBlock = htmlToDraft(initValue);
+      console.log(contentBlock, 'contentBlock');
       if (contentBlock) {
         const contentState = ContentState.createFromBlockArray(
           contentBlock.contentBlocks,
@@ -151,6 +153,7 @@ export default class ArticleEditor extends React.Component<IProps, IState> {
   };
   //编辑器文本框内容
   onContentStateChange = (editorContent: RawDraftContentState) => {
+    console.log(editorContent);
     this.setState({
       editorContent,
     });

@@ -46,12 +46,9 @@ const Header = () => {
           inlineIndent={12}
         >
           {mockData.map((item, idx) => {
-            if (
-              visitor.includes(item.id) ||
-              (item.id == -1 && user.username == 'admin')
-            ) {
+            if (visitor.includes(item.id) || user.username == 'admin') {
               return (
-                <Menu.Item key={idx} active={params.pathname == item.url}>
+                <Menu.Item key={idx}>
                   <Link to={item.url}>{item.name}</Link>
                 </Menu.Item>
               );

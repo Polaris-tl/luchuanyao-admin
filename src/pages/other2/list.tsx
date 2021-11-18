@@ -28,7 +28,9 @@ const NewsList: React.FC<IProps> = (props) => {
 
   const deleteNews = async () => {
     if (checkedList.length != 1) return;
-    const res = myGet('/NewsCenter/deleteById', { id: checkedList[0] + '' });
+    const res = await myGet('/NewsCenter/deleteById', {
+      id: checkedList[0] + '',
+    });
     if (res) {
       message.success('删除成功');
       setCheckedList([]);

@@ -4,37 +4,42 @@ import { CloseOutlined } from '@ant-design/icons';
 import { myGet, myPost, uploadFile, uploadFiles } from '@/utils/request';
 import st from './index.less';
 
-type mediaType = 'img' | 'video'
+type mediaType = 'img' | 'video';
 interface IBanner {
   file?: File;
   img: string;
-  type: mediaType,
-  id: string
+  type: mediaType;
+  id: string;
 }
 
-const BannerUploader:React.FC<{resourceId: string}> = (props) => {
-  const { resourceId } = props
+const BannerUploader: React.FC<{ resourceId: string }> = (props) => {
+  const { resourceId } = props;
   const [fileList, setFileList] = useState<IBanner[]>([]); //banner图片\视频列表
   const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
     (async () => {
-      const banners = await myPost<IBanner[]>('ResourceImg/selectByCondition', {resourceId: resourceId})
-      const newFileList = banners.map(banner => ({
+      const banners = await myPost<IBanner[]>('ResourceImg/selectByCondition', {
+        resourceId: resourceId,
+      });
+      const newFileList = banners.map((banner) => ({
         img: banner.img,
         id: banner.id,
-        type: banner.img.includes('.mp4') ? 'video' : 'img' as mediaType
-      }))
-      setFileList(newFileList)
+        type: banner.img.includes('.mp4') ? 'video' : ('img' as mediaType),
+      }));
+      setFileList(newFileList);
     })();
   }, []);
 
   // 发布网站
-  const onSubmiit =  async () => {
-    const res = await uploadFiles(fileList.filter(item => item.file).map(item => item.file) as File[], resourceId)
-    if(res.msg == '上传成功'){
-      message.success('上传成功')
+  const onSubmiit = async () => {
+    const res = await uploadFiles(
+      fileList.filter((item) => item.file).map((item) => item.file) as File[],
+      resourceId,
+    );
+    if (res.msg == '上传成功') {
+      message.success('上传成功');
     }
-  }
+  };
   // 文件改变事件
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return;
@@ -51,14 +56,14 @@ const BannerUploader:React.FC<{resourceId: string}> = (props) => {
         image.onload = function () {
           const width = image.width;
           const height = image.height;
-          if(width <= 1920 && height <= 600){
+          if (width <= 1920 && height <= 600) {
             setFileList([
               ...fileList,
               {
                 file: file,
                 img: reader.result as string,
                 type: 'img',
-                id: ''
+                id: '',
               },
             ]);
           }
@@ -76,28 +81,28 @@ const BannerUploader:React.FC<{resourceId: string}> = (props) => {
           file: file,
           img: URL.createObjectURL(file),
           type: 'video',
-          id: ''
+          id: '',
         },
       ]);
     }
   };
 
   const deleteBanner = (banner: IBanner) => {
-    myGet('ResourceImg/deleteById', {id: banner.id})
+    myGet('ResourceImg/deleteById', { id: banner.id });
     setFileList(
       fileList.filter((item) => {
-        if(banner.file){
+        if (banner.file) {
           return item.file != banner.file;
         }
         return item.img != banner.img;
       }),
     );
-  }
-  return(
+  };
+  return (
     <div className={st.uploadBox}>
       <div className={st.imgBox}>
         {fileList.length == 0 && <div>请上传图片或视频</div>}
-        {fileList.map((file,idx) => {
+        {fileList.map((file, idx) => {
           return (
             <div style={{ position: 'relative' }} key={idx}>
               {file.type == 'img' ? (
@@ -107,6 +112,7 @@ const BannerUploader:React.FC<{resourceId: string}> = (props) => {
               )}
               <CloseOutlined
                 onClick={() => deleteBanner(file)}
+                className={st.close}
                 style={{
                   position: 'absolute',
                   right: '40px',
@@ -142,7 +148,7 @@ const BannerUploader:React.FC<{resourceId: string}> = (props) => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default BannerUploader
+export default BannerUploader;
